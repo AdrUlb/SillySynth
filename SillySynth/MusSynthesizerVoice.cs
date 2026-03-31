@@ -2,7 +2,7 @@ using SillySynth.SoundFont;
 
 namespace SillySynth;
 
-internal sealed class MusSynthesizerVoice(MusSynthesizerChannel channel)
+internal struct MusSynthesizerVoice(MusSynthesizerChannel channel)
 {
 	public byte Note { get; private set; }
 	private Memory<short> _samples;
