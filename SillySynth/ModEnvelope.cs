@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace SillySynth;
 
 internal struct ModEnvelope
@@ -55,6 +57,7 @@ internal struct ModEnvelope
 		_releaseSamples = int.Min(_releaseSamples, (int)(_sampleRate * 0.2f));
 	}
 
+	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
 	public float Process()
 	{
 		if (CurrentEnvelopeStage == EnvelopeStage.Done)

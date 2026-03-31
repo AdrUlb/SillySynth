@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace SillySynth;
 
 internal struct LowFrequencyOscillator
@@ -19,6 +21,7 @@ internal struct LowFrequencyOscillator
 		_samplesElapsed = 0;
 	}
 
+	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
 	public float Process()
 	{
 		if (_samplesElapsed < _delaySamples)

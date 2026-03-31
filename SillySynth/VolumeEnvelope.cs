@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace SillySynth;
 
 internal struct VolumeEnvelope()
@@ -57,6 +59,7 @@ internal struct VolumeEnvelope()
 
 	public void Kill() => CurrentStage = EnvelopeStage.Done;
 
+	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
 	public float Process()
 	{
 		if (CurrentStage == EnvelopeStage.Done)

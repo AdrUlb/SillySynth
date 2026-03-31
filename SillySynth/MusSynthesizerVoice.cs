@@ -1,4 +1,5 @@
 using SillySynth.SoundFont;
+using System.Runtime.CompilerServices;
 
 namespace SillySynth;
 
@@ -138,6 +139,7 @@ internal struct MusSynthesizerVoice(MusSynthesizerChannel channel)
 		_volEnv.FastRelease();
 	}
 
+	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
 	public void Render(Span<float> buffer)
 	{
 		if (!IsActive)

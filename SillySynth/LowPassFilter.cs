@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace SillySynth;
 
 internal struct LowPassFilter
@@ -49,6 +51,7 @@ internal struct LowPassFilter
 		_a2 = (1.0f - alpha) / a0;
 	}
 
+	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
 	public float Process(float input)
 	{
 		var output = _b0 * input + _b1 * _x1 + _b2 * _x2 - _a1 * _y1 - _a2 * _y2;
