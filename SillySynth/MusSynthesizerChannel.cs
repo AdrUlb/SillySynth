@@ -2,7 +2,7 @@ using SillySynth.SoundFont;
 
 namespace SillySynth;
 
-internal struct MusSynthesizerChannel
+internal sealed class MusSynthesizerChannel
 {
 	private const int _maxVoices = 64;
 
