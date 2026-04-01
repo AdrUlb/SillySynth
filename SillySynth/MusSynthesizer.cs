@@ -6,12 +6,14 @@ public sealed class MusSynthesizer : IMusSynthesizer
 {
 	private readonly Sf2 _soundFont;
 	private readonly ushort _sampleRate;
+	private readonly float _masterGain;
 	private readonly MusSynthesizerChannel[] _channels = new MusSynthesizerChannel[16];
 
-	public MusSynthesizer(Sf2 soundFont, ushort sampleRate)
+	public MusSynthesizer(Sf2 soundFont, ushort sampleRate, float masterGain = 1.0f)
 	{
 		_soundFont = soundFont;
 		_sampleRate = sampleRate;
+		_masterGain = masterGain;
 		for (var i = 0; i < _channels.Length; i++)
 			_channels[i] = new();
 	}
@@ -92,9 +94,12 @@ public sealed class MusSynthesizer : IMusSynthesizer
 		}
 
 		// Apply a master gain and soft clipping
-		const float masterGain = 0.5f;
 		for (var i = 0; i < outputBuffer.Length; i++)
-			outputBuffer[i] = float.Tanh(outputBuffer[i] * masterGain);
+		{
+			ref var sample = ref outputBuffer[i];
+			sample *= _masterGain;
+			sample = float.Tanh(sample);
+		}
 	}
 
 	private void SpawnVoices(byte channel, byte note, byte velocity)
