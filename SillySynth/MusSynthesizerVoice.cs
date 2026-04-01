@@ -40,7 +40,7 @@ internal struct MusSynthesizerVoice(MusSynthesizerChannel channel)
 	private float _modLfoToPitchCents;
 	private float _modLfoToVolumeCb;
 
-	private const float _gainFilterStrength = 0.99f;
+	private const float _gainFilterStrength = 0.9f;
 	private float _gainFilter;
 	private const int _filterUpdateInterval = 32;
 	private int _filterUpdateStep;
