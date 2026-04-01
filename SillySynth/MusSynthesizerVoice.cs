@@ -6,12 +6,16 @@ namespace SillySynth;
 internal struct MusSynthesizerVoice(MusSynthesizerChannel channel)
 {
 	public byte Note { get; private set; }
+
 	private Memory<short> _samples;
 	private uint _outputSampleRate;
 	private int _loopStart;
 	private int _loopEnd;
+
 	public bool IsActive => !_volEnv.IsDone;
+
 	public short ExclusiveClass { get; private set; }
+
 	private int _sampleModes;
 
 	private double _increment;
@@ -28,7 +32,6 @@ internal struct MusSynthesizerVoice(MusSynthesizerChannel channel)
 	private float _modEnvToPitchCents;
 
 	private LowPassFilter _filter;
-	private float _baseFilterCents;
 
 	private LowFrequencyOscillator _vibratoLowFrequencyOscillator;
 	private LowFrequencyOscillator _modLowFrequencyOscillator;
@@ -37,6 +40,8 @@ internal struct MusSynthesizerVoice(MusSynthesizerChannel channel)
 	private float _modLfoToPitchCents;
 	private float _modLfoToVolumeCb;
 
+	private const float _gainFilterStrength = 0.99f;
+	private float _gainFilter;
 	private const int _filterUpdateInterval = 32;
 	private int _filterUpdateStep;
 
@@ -98,8 +103,6 @@ internal struct MusSynthesizerVoice(MusSynthesizerChannel channel)
 
 		_modEnvToFilterCents = generators.GetValue(Sf2SynthParam.ModEnvToFilterFc);
 		_modEnvToPitchCents = generators.GetValue(Sf2SynthParam.ModEnvToPitch);
-
-		_baseFilterCents = generators.GetValue(Sf2SynthParam.InitialFilterFc);
 
 		_filter.Initialize(
 			_outputSampleRate,
@@ -187,7 +190,9 @@ internal struct MusSynthesizerVoice(MusSynthesizerChannel channel)
 
 			var totalCb = _initialAttenuation + envCb;
 			var envGain = (float)double.Pow(10.0, -totalCb / 200.0);
-			var finalGain = envGain * _velocityGain * channelGain * lfoVolumeMultiplier;
+			var finalGainTarget = envGain * _velocityGain * channelGain * lfoVolumeMultiplier;
+			_gainFilter = finalGainTarget * (1.0f - _gainFilterStrength) + _gainFilter * _gainFilterStrength;
+			var finalGain = _gainFilter;
 
 			var isLoopingMode = _sampleModes == 1 || _sampleModes == 3 && _volEnv.CurrentStage < EnvelopeStage.Release;
 			var doLoop = isLoopingMode && _loopStart < _loopEnd;
@@ -203,6 +208,9 @@ internal struct MusSynthesizerVoice(MusSynthesizerChannel channel)
 
 			if (doLoop)
 			{
+				if (indexM1 < _loopStart && _playhead >= _loopStart)
+					indexM1 += _loopEnd - _loopStart;
+
 				while (index1 >= _loopEnd)
 					index1 -= _loopEnd - _loopStart;
 
