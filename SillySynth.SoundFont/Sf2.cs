@@ -50,9 +50,9 @@ public sealed class Sf2
 		return true;
 	}
 
-	public static Sf2 Load(string filePath)
+	public static Sf2 Load(Stream stream)
 	{
-		var file = Sf2File.Load(filePath);
+		var file = Sf2File.Load(stream);
 
 		var presets = new Dictionary<PresetKey, Sf2Preset>();
 

@@ -10,9 +10,8 @@ internal sealed class Sf2File
 	public required short[] SampleData { get; init; }
 	public required Sf2FilePresetData PresetData { get; init; }
 
-	public static Sf2File Load(string filePath)
+	public static Sf2File Load(Stream stream)
 	{
-		using var stream = File.OpenRead(filePath);
 		var header = Sf2RiffHeader.Read(stream);
 		if (!header.Type.SequenceEqual("RIFF"u8))
 			throw new("FIXME");
